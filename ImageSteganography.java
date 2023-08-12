@@ -73,9 +73,9 @@ public class ImageSteganography {
                 if (msgIndex <= msgLength) {
                     char foo = (msgIndex < msgLength) ? message.charAt(msgIndex) : 0;
                     // a = (a & 0b11111100) | ((buf >> 6) & 0b11);
-                    r = (r & 0b11111100) | ((foo >> 5) & 0b11);
-                    g = (g & 0b11111100) | ((foo >> 3) & 0b11);
-                    b = (b & 0b11111000) | ((foo >> 0) & 0b111);
+                    r = (r & 0b11111100) | (foo >> 5 & 0b11  ^ (g >> 2 & 0b11));
+                    g = (g & 0b11111100) | (foo >> 3 & 0b11  ^ (b >> 3 & 0b11));
+                    b = (b & 0b11111000) | (foo >> 0 & 0b111 ^ (r >> 2 & 0b111));
                     msgIndex++;
                 }
 
@@ -101,7 +101,7 @@ public class ImageSteganography {
             g = rgb >> 8 & 0xff;
             b = rgb & 0xff;
 
-            foo = ((r & 0b11) << 5) | ((g & 0b11) << 3) | (b & 0b111);
+            foo = ((r & 0b11 ^ (g >> 2 & 0b11)) << 5) | ((g & 0b11 ^ (b >> 3 & 0b11)) << 3) | (b & 0b111 ^ (r >> 2 & 0b111));
 
             if (foo == 0)
                 break;
